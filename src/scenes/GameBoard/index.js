@@ -79,11 +79,16 @@ const GameBoard = ({ navigation }) => {
     setGameBoard(prevBoard =>
       flipCard(prevBoard, boardAction.cardToFlipUp, true),
     );
+
     setSelectedCells(newSelectedCells);
 
     setTimeout(() => {
-      if (boardAction.cardToRemove.length === 2) {
+      if (
+        boardAction.cardToRemove.length === 2 ||
+        boardAction.cardToFlipDown.length === 2
+      ) {
         setFlipCount(0);
+        setSelectedCells([]);
       } else {
         setFlipCount(count => count - boardAction.cardToFlipDown.length);
       }
@@ -97,7 +102,7 @@ const GameBoard = ({ navigation }) => {
       setGameBoard(prevBoard =>
         flipCard(prevBoard, boardAction.cardToFlipDown, false),
       );
-    }, 1000);
+    }, 50);
   };
 
   const updateNavParams = () => {

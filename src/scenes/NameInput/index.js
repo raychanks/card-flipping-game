@@ -5,6 +5,8 @@ import { storeData } from '../../services/storage';
 const NameInput = ({ navigation }) => {
   const [textInput, setTextInput] = useState('');
   const [errMsg, setErrMsg] = useState('');
+  const highScoreData = navigation.getParam('highScoreData');
+  const score = navigation.getParam('score');
 
   const handleInputChange = text => {
     const isValid = validateInput(text);
@@ -15,8 +17,6 @@ const NameInput = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (validateInput(textInput)) {
-      const highScoreData = navigation.getParam('highScoreData');
-      const score = navigation.getParam('score');
       const newHighScoreData = highScoreData
         .concat({ name: textInput.trim(), score })
         .sort((a, b) => b.score - a.score)
@@ -28,6 +28,18 @@ const NameInput = ({ navigation }) => {
     }
   };
 
+  const getRank = () => {
+    let rank = 1;
+
+    for (const data of highScoreData) {
+      if (data.score >= score) {
+        rank++;
+      }
+    }
+
+    return rank;
+  };
+
   const validateInput = input => {
     return !/[^a-z0-9_. ]/i.test(input) && input.trim();
   };
@@ -35,6 +47,9 @@ const NameInput = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>High Score!</Text>
+      <Text style={styles.subHeader}>
+        Score: {score}, Rank: {getRank()}
+      </Text>
       <View style={styles.body}>
         <Text style={styles.text}>Please Enter Your Name:</Text>
         <TextInput
@@ -59,8 +74,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 40,
-    marginBottom: 20,
+    marginBottom: 4,
     fontSize: 24,
+  },
+  subHeader: {
+    marginBottom: 20,
+    fontSize: 16,
   },
   text: {
     marginBottom: 10,
